@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <!-- Global site tag (gtag.js) - Google Analytics -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-D30XXGHC8B"></script>
+    <script>
+    window.dataLayer = window.dataLayer || [];
+    function gtag(){dataLayer.push(arguments);}
+    gtag('js', new Date());
+
+    gtag('config', 'G-D30XXGHC8B');
+    </script>
+
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, shrink-to-fit=no">
+    <title>POET</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.5.0/css/bootstrap.min.css">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Source+Sans+Pro">
+    <link rel="stylesheet" href="assets/css/Highlight-Clean.css">
+    <link rel="stylesheet" href="assets/css/styles.css">
+    <link rel="stylesheet" href="assets/css/Team-Clean.css">
+</head>
+
+<body>
+    <div class="highlight-clean" style="padding-bottom: 10px;">
+        <div class="container">
+            <h1 class="text-center">POET: Training Neural Networks on Tiny Devices <br>
+                with Integrated Rematerialization and Paging</h1>
+        </div>
+        <div><p></p></div>
+        <div class="container" style="max-width: 768px;">
+            <div class="row">
+                <div class="col-md-12">
+                    <h4 class="text-center" style="margin: 0px;">
+                        <a href="people.eecs.berkeley.edu/~shishirpatil/">Shishir G. Patil</a>, 
+                        <a class="text-center" href="https://www.parasjain.com/">Paras Jain</a>, 
+                        <a class="text-center" href="https://people.eecs.berkeley.edu/~prabal/">Prabal Dutta</a>, 
+                        <a class="text-center" href="https://people.eecs.berkeley.edu/~istoica/">Ion Stoica</a>, 
+                        <a class="text-center" href="https://people.eecs.berkeley.edu/~jegonzal/">Joseph Gonzalez</a></h4>
+                    <h4></h4>
+                    <h5 class="text-center">UC Berkeley</h5>
+                </div>
+            </div>
+        </div>
+        <div><p></p></div>
+        <div class="buttons" style="margin-bottom: 8px;">
+            <a class="btn btn-primary" role="button" href="https://recorder-v3.slideslive.com/?share=69787&s=40e99c40-07cf-478b-84dc-5d3bfce97d5c">Video (5 min)</a>
+            <a class="btn btn-primary" role="button" href="https://proceedings.mlr.press/v162/patil22b/patil22b.pdf">Paper</a>
+            <a class="btn btn-light" role="button" href="https://github.com/ShishirPatil/poet">GitHub (Coming soon)</a>
+        </div>
+        <div class="container" style="max-width: 768px;">
+            <div class="row">
+                <div class="col-md-12 text-center"><img src="assets/img/poet-system-diagram.png" 
+                    style="width: 100%;margin-bottom: 8px;" alt="POET system overview">
+                    <em>POET optimizes state-of-the-art ML models for <strong>training on Edge devices</strong>. Operators of the ML model 
+                        are profiled on target edge device to obtain fine-grained profiles. POET adopts an integrated integrated 
+                        rematerialization and paging to produce an energy-optimal training schedule.</em>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div><p></p></div>
+    <hr style="max-width: 768px;">
+    <div class="container" style="max-width: 768px;">
+        <div class="row">
+            <div class="col-md-12">
+                <h2>Overview</h2>
+                <ul>
+                    <li>There is a growing trend to finetune models on edge devices. Fine-tuning models on the edge satisfies privacy constraints 
+                        and enables offline operation.</li>
+                    <li>Limited memory makes training new deep learning models on edge infeasible.</li>
+                    <li>Given a memory budget and a run-time constraint for ML training, POET finds a 
+                        (provably) energy-optimal schedule. </li>
+                   <li>First to demonstrate training of modern DL models such as BERT and ResNets on smartphones and tiny
+                       ARM Cortex-M devices!
+                    .</li>
+                </ul>
+        </div>
+    </div>
+    <div><p></p></div>
+    <hr style="max-width: 768px;">
+    <div class="container" style="max-width: 768px;">
+        <div class="row">
+            <div class="col-md-12">
+                <h2>Abstract</h2>
+                <p>
+                    Fine-tuning models on edge devices like mobile phones would enable privacy-preserving personalization over sensitive data. 
+                    However, edge training has historically been limited to relatively small models with simple architectures because training 
+                    is both memory and energy intensive. We present POET, an algorithm to enable training large neural networks on memory-scarce 
+                    battery-operated edge devices. POET jointly optimizes the integrated search search spaces of rematerialization and paging, 
+                    two algorithms to reduce the memory consumption of backpropagation. Given a memory budget and a run-time constraint, we 
+                    formulate a mixed-integer linear program (MILP) for energy-optimal training. Our approach enables training significantly 
+                    larger models on embedded devices while reducing energy consumption while not modifying mathematical correctness of 
+                    backpropagation. We demonstrate that it is possible to fine-tune both ResNet-18 and BERT within the memory constraints 
+                    of a Cortex-M class embedded device while outperforming current edge training methods in energy efficiency. POET is an 
+                    open-source project available at https://github.com/ShishirPatil/poet (Soon..!) 
+                    
+                <br>
+                </p>
+            </div>
+        </div>
+    </div>
+    
+    <hr style="max-width: 768px;">
+    <div class="container" style="max-width: 768px;">
+        <div class="row">
+            <div class="col-md-12">
+                <h2>Citation</h2>
+                <code>
+                    @inproceedings{patil2022poet,<br>
+                        &nbsp; 	title={POET: Training Neural Networks on Tiny Devices with <br>
+                        &nbsp;  Integrated Rematerialization and Paging},<br>
+                        &nbsp; 	author={Patil, Shishir G and Jain, Paras and Dutta, Prabal and Stoica, Ion <br>
+                        &nbsp;  and Gonzalez, Joseph},<br>
+                        &nbsp; 	booktitle={International Conference on Machine Learning},<br>
+                        &nbsp; 	pages={17573--17583},<br>
+                        &nbsp; 	year={2022},<br>
+                        &nbsp; 	organization={PMLR}<br>
+                    }
+                </code></div>
+        </div>
+    </div>
+</body>
+
+</html>
