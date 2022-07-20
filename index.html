@@ -32,7 +32,7 @@
             <div class="row">
                 <div class="col-md-12">
                     <h4 class="text-center" style="margin: 0px;">
-                        <a href="people.eecs.berkeley.edu/~shishirpatil/">Shishir G. Patil</a>, 
+                        <a class="text-center" href="https://people.eecs.berkeley.edu/~shishirpatil/">Shishir G. Patil</a>, 
                         <a class="text-center" href="https://www.parasjain.com/">Paras Jain</a>, 
                         <a class="text-center" href="https://people.eecs.berkeley.edu/~prabal/">Prabal Dutta</a>, 
                         <a class="text-center" href="https://people.eecs.berkeley.edu/~istoica/">Ion Stoica</a>, 
@@ -48,6 +48,18 @@
             <a class="btn btn-primary" role="button" href="https://proceedings.mlr.press/v162/patil22b/patil22b.pdf">Paper</a>
             <a class="btn btn-light" role="button" href="https://github.com/ShishirPatil/poet">GitHub (Coming soon)</a>
         </div>
+        <div><p></p></div>
+        <div>
+            <div class="container" style="max-width: 768px;">
+                <div class="row">
+                    <div class="col-md-12">
+                        <h3 class="text-center">Train BERT and other large models on smartphones</h3>
+                    </div>
+                </div>
+            
+            </div>
+        </div>
+        <div><p></p></div>
         <div class="container" style="max-width: 768px;">
             <div class="row">
                 <div class="col-md-12 text-center"><img src="assets/img/poet-system-diagram.png" 
@@ -67,13 +79,13 @@
                 <h2>Overview</h2>
                 <ul>
                     <li>There is a growing trend to finetune models on edge devices. Fine-tuning models on the edge satisfies privacy constraints 
-                        and enables offline operation.</li>
-                    <li>Limited memory makes training new deep learning models on edge infeasible.</li>
-                    <li>Given a memory budget and a run-time constraint for ML training, POET finds a 
-                        (provably) energy-optimal schedule. </li>
-                   <li>First to demonstrate training of modern DL models such as BERT and ResNets on smartphones and tiny
-                       ARM Cortex-M devices!
-                    .</li>
+                        and enables offline operation</li>
+                    <li>Limited memory makes training new deep learning models on edge infeasible</li>
+                    <li>Given a memory budget and a run-time constraint for ML training, POET (Private Optimal Energy Training) finds a 
+                        provably energy-optimal plan for scheduling nodes of the training graph </li>
+                   <li><mark>With POET, we are the first to demonstrate training of  memory-hungry SOTA ML models such as BERT and 
+                       ResNets on smartphones and tiny ARM Cortex-M devices!</mark>
+                    </li>
                 </ul>
         </div>
     </div>
