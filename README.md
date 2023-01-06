@@ -48,7 +48,7 @@ If you are affiliated with an academic institution, you can acquire a free Gurob
 Once you have installed POET and optionally configured Gurobi, you can run the solver via the command line. Here's an example:
 
 ```bash
-python -m poet --model resnet18_cifar --platform a72 --ram-budget 3000000 --runtime-budget 7.6
+python poet/solve.py --model resnet18_cifar --platform a72 --ram-budget 3000000 --runtime-budget 7.6
 ```
 
 ### Using the Solver API Directly
