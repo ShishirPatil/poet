@@ -1,0 +1,12 @@
+# This file contains contains settings which ensure consistent formatting for files
+# including indentation and newlines across various editors
+
+root = true
+
+[*]
+charset = utf-8
+end_of_line = lf
+indent_size = 4
+indent_style = space
+insert_final_newline = true
+trim_trailing_whitespace = true
