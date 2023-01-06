@@ -62,6 +62,7 @@ def extract_costs_from_dfgraph(g: DFGraph, sd_card_multipler=5.0):
     page_out_cost_vec = cpu_cost_vec * sd_card_multipler
     return cpu_cost_vec, page_in_cost_vec, page_out_cost_vec
 
+
 def get_chipset_and_net(platform: str, model: str, batch_size: int, mem_power_scale: float = 1.0):
     if platform == "m0":
         chipset = MKR1000
@@ -99,15 +100,9 @@ def get_chipset_and_net(platform: str, model: str, batch_size: int, mem_power_sc
 
     return chipset, net
 
+
 def plot_network(
-    platform: str,
-    model: str,
-    directory: str,
-    batch_size: int = 1,
-    mem_power_scale: float = 1.0,
-    format="pdf",
-    quiet=True,
-    name=""
+    platform: str, model: str, directory: str, batch_size: int = 1, mem_power_scale: float = 1.0, format="pdf", quiet=True, name=""
 ):
     chipset, net = get_chipset_and_net(platform, model, batch_size, mem_power_scale)
     g, *_ = make_dfgraph_costs(net, chipset)

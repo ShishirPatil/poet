@@ -243,10 +243,10 @@ class GradientLayer(DNNLayer):
 
 def get_net_costs(net, device):
     compute_energy_list, compute_runtime_list, ram_list, param_ram_list, pagein_cost, pageout_cost = [[] for _ in range(6)]
-    ''' 
+    """ 
     If you have access to hardware device, this costs should be obtained from accurate profiles. 
     Else, POET adopts a flop based model.
-    '''
+    """
     for layer in net:
         compute_energy_list.append(layer.energy(device))
         compute_runtime_list.append(layer.runtime(device))
@@ -263,4 +263,3 @@ def get_net_costs(net, device):
         pagein_cost_joules=pagein_cost,
         pageout_cost_joules=pageout_cost,
     )
-

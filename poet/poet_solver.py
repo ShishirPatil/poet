@@ -175,10 +175,7 @@ class POETSolver:
     def get_result(self, var_matrix, dtype=int):
         if not self.is_feasible():
             return None
-        return [
-            [dtype(pl.value(var_matrix[i][j])) for j in range(len(var_matrix[0]))]
-            for i in range(len(var_matrix))
-        ]
+        return [[dtype(pl.value(var_matrix[i][j])) for j in range(len(var_matrix[0]))] for i in range(len(var_matrix))]
 
     def solve(self):
         with Timer("solve_timer") as t:

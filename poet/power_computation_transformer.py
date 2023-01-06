@@ -2,7 +2,7 @@ from typing import List
 
 import numpy as np
 
-# FLOPS_PER_WATT is FLOP_PER_JOULE 
+# FLOPS_PER_WATT is FLOP_PER_JOULE
 
 from poet.chipsets import MKR1000
 from poet.power_computation import DNNLayer
@@ -24,9 +24,7 @@ class QueryKeyValueMatrix(DNNLayer):
 class QKTMatrix(DNNLayer):
     # Fusing Masking and Dropout
     def __init__(self, SEQ_LEN, HIDDEN_DIM, I, ATTN_HEADS, input):
-        super().__init__(
-            out_shape=(SEQ_LEN, I, ATTN_HEADS), depends_on=[input] if input is not None else [], param_count=0 
-        )
+        super().__init__(out_shape=(SEQ_LEN, I, ATTN_HEADS), depends_on=[input] if input is not None else [], param_count=0)
         self.flop = SEQ_LEN * HIDDEN_DIM * I * ATTN_HEADS + np.prod(self.out_shape) + np.prod(self.out_shape)  # QKT + mask + dropout
 
 

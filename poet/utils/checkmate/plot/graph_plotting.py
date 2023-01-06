@@ -29,9 +29,7 @@ def plot_dfgraph(g: DFGraph, directory, format="pdf", quiet=True, name=""):
     print("Saved network architecture plot to directory:", directory)
 
 
-def plot_schedule(
-    sched_result: ScheduledResult, plot_mem_usage=False, save_file: Optional[PathLike] = None, show=False, plt=None
-):
+def plot_schedule(sched_result: ScheduledResult, plot_mem_usage=False, save_file: Optional[PathLike] = None, show=False, plt=None):
     assert sched_result.feasible
     R = sched_result.schedule_aux_data.R
     S = sched_result.schedule_aux_data.S
@@ -40,9 +38,7 @@ def plot_schedule(
     _plot_schedule_from_rs(R, S, plot_mem_usage, mem_grid, U, save_file, show, plt)
 
 
-def _plot_schedule_from_rs(
-    R, S, plot_mem_usage=False, mem_grid=None, U=None, save_file: Optional[PathLike] = None, show=False, plt=None
-):
+def _plot_schedule_from_rs(R, S, plot_mem_usage=False, mem_grid=None, U=None, save_file: Optional[PathLike] = None, show=False, plt=None):
     if plt is None:
         import matplotlib.pyplot as plt
 
