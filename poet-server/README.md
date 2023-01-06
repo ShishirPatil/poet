@@ -69,6 +69,6 @@ The Docker image described above is hosted on Docker Hub for convenient use on A
 4. Run the following commands to pull the image and start the Gurobi server:
     ```
     docker pull anishshanbhag/poet-server
-    docker run -p 80:80 -v ~/gurobi.lic:opt/gurobi/gurobi.lic anishshanbhag/poet-server
+    docker run -p 80:80 -v ~/gurobi.lic:/opt/gurobi/gurobi.lic anishshanbhag/poet-server
     ```
 5. You should now be able to query the Gurobi server at the Public DNS URL from AWS.
