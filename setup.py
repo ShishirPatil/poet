@@ -8,9 +8,11 @@ setup(
     python_requires=">=3.8",
     install_requires=[
         "numpy",
+        "matplotlib",
         "pandas",
         "loguru",
         "gurobipy",
+        "graphviz",
         "toposort",
         "pulp",
     ],
