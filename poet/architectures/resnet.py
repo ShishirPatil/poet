@@ -1,17 +1,8 @@
-from poet.power_computation import (
-    AvgPool2d,
-    BatchNorm2d,
-    Conv2dLayer,
-    CrossEntropyLoss,
-    FlattenLayer,
-    GradientLayer,
-    InputLayer,
-    LinearLayer,
-    MaxPool2d,
-    ReLULayer,
-    SkipAddLayer,
-    get_net_costs,
-)
+from poet.power_computation import (AvgPool2d, BatchNorm2d, Conv2dLayer,
+                                    CrossEntropyLoss, FlattenLayer,
+                                    GradientLayer, InputLayer, LinearLayer,
+                                    MaxPool2d, ReLULayer, SkipAddLayer,
+                                    get_net_costs)
 
 # Resnet implemented from the paper, not from PyTorch.
 
@@ -161,7 +152,7 @@ if __name__ == "__main__":
     from poet.chipsets import *
 
     CHIPSET = MKR1000
-    print("### network ###")
+    print("### Network ###")
     net = resnet18_cifar(1)
 
     param_count = 0
@@ -170,10 +161,11 @@ if __name__ == "__main__":
         param_count += layer.param_count
         totalEnergy += layer.energy(M4F)
         print(layer)
-    print("### Total no of Paramters in network:", param_count)
-    print("### Total energy {fwd+backward} cost is:", totalEnergy)
 
-    print("### Profiles ###")
-    resource = get_net_costs(net, CHIPSET)
-    for _list in resource:
-        print(_list, resource[_list])
+    print("### Total number of parameters in network:", param_count)
+    print("### Total energy (forward + backward) cost is:", totalEnergy)
+
+    # print("### Profiles ###")
+    # resource = get_net_costs(net, CHIPSET)
+    # for _list in resource:
+    #     print(_list, resource[_list])

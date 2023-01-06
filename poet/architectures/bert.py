@@ -64,10 +64,10 @@ if __name__ == "__main__":
         totalEnergy += layer.energy(CHIPSET)
         print(layer)
 
-    print("### Total no of Paramters in network:", param_count)
-    print("### Total energy {fwd+backward} cost is:", totalEnergy)
+    print("### Total number of parameters in network:", param_count)
+    print("### Total energy (forward + backward) cost is:", totalEnergy)
 
-    print("### Profiles ###")  # Print it out only if required, else looks illegible
-    resource = get_net_costs(net, MKR1000)
+    # print("### Profiles ###")
+    # resource = get_net_costs(net, MKR1000)
     # for _list in resource:
-    # print(_list, ":", resource[_list])
+    #     print(_list, ":", resource[_list])
