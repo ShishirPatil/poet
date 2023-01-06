@@ -2,6 +2,7 @@ import pickle
 from pathlib import Path
 from typing import List
 
+import matplotlib.pyplot as plt
 import numpy as np
 import pandas as pd
 
@@ -10,6 +11,7 @@ from poet.architectures.linear import make_linear_network
 from poet.architectures.resnet import resnet18, resnet18_cifar, resnet50
 from poet.architectures.vgg import vgg16
 from poet.chipsets import M4F, MKR1000, JetsonTX2, RPi, RPiNoCache
+from poet.poet_solver import POETSolution
 from poet.power_computation import DNNLayer, GradientLayer, get_net_costs
 from poet.utils.checkmate.core.dfgraph import DFGraph
 from poet.utils.checkmate.core.graph_builder import GraphBuilder
@@ -112,3 +114,27 @@ def plot_network(
     chipset, net = get_chipset_and_net(platform, model, batch_size, mem_power_scale)
     g, *_ = make_dfgraph_costs(net, chipset)
     plot_dfgraph(g, directory, format, quiet, name)
+
+def print_result(result: dict):
+    solution: POETSolution = result["solution"]
+    if solution.feasible:
+        solution_msg = "successfully found an optimal solution" if solution.optimal else "found a feasible solution"
+        print(
+            f"POET {solution_msg} with a memory budget of {result['ram_budget_bytes']} bytes that consumes {result['total_power_cost_cpu']} J of CPU power and {result['total_power_cost_page']} J of memory paging power"
+        )
+        if not solution.optimal:
+            print("This solution is not guaranteed to be optimal - you can try increasing the time limit to find an optimal solution")
+
+        plt.matshow(solution.R)
+        plt.title("R")
+        plt.show()
+
+        plt.matshow(solution.SRam)
+        plt.title("SRam")
+        plt.show()
+
+        plt.matshow(solution.SSd)
+        plt.title("SSd")
+        plt.show()
+    else:
+        print("POET failed to find a feasible solution within the provided time limit")

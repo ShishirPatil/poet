@@ -1,13 +1,12 @@
 from argparse import ArgumentParser
 from typing import Literal, Optional
 
-import matplotlib.pyplot as plt
 import numpy as np
 
 from poet import solve
-from poet.poet_solver import POETSolution, POETSolver
+from poet.poet_solver import POETSolver
 from poet.poet_solver_gurobi import POETSolverGurobi
-from poet.util import get_chipset_and_net, make_dfgraph_costs, plot_dfgraph
+from poet.util import get_chipset_and_net, make_dfgraph_costs, plot_dfgraph, print_result
 
 
 def solve(
@@ -179,26 +178,4 @@ if __name__ == "__main__":
         plot_directory=args.plot_directory,
     )
 
-    solution: POETSolution = result["solution"]
-    if solution.feasible:
-        optimal = solution.optimal
-        solution_msg = "successfully found an optimal solution" if solution.optimal else "found a feasible solution"
-        print(
-            f"POET {solution_msg} with a memory budget of {result['ram_budget_bytes']} bytes that consumes {result['total_power_cost_cpu']} J of CPU power and {result['total_power_cost_page']} J of memory paging power"
-        )
-        if not solution.optimal:
-            print("This solution is not guaranteed to be optimal - you can try increasing the time limit to find an optimal solution")
-
-        plt.matshow(solution.R)
-        plt.title("R")
-        plt.show()
-
-        plt.matshow(solution.SRam)
-        plt.title("SRam")
-        plt.show()
-
-        plt.matshow(solution.SSd)
-        plt.title("SSd")
-        plt.show()
-    else:
-        print("POET failed to find a feasible solution within the provided time limit")
+    print_result(result)
