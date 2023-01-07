@@ -60,10 +60,10 @@ The Docker image described above is hosted on Docker Hub for convenient use on A
 1. SSH into the EC2 instance by running `ssh poet-server`.
 2. Run the following commands to install and start Docker:
     ```
-    sudo yum update -y
-    sudo yum install -y docker
+    sudo apt update -y
+    sudo apt install -y docker.io
     sudo service docker start
-    sudo usermod -a -G docker ec2-user
+    sudo usermod -a -G docker <username>
     ```
 3. Exit the SSH session and reconnect to ensure that the Docker group changes take effect.
 4. Run the following commands to pull the image and start the Gurobi server:
