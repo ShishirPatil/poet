@@ -1,7 +1,8 @@
 import pickle
 from pathlib import Path
-from typing import List
+from typing import List, Optional
 
+import matplotlib.pyplot as plt
 import numpy as np
 import pandas as pd
 
@@ -11,9 +12,11 @@ from poet.architectures.resnet import resnet18, resnet18_cifar, resnet50
 from poet.architectures.vgg import vgg16
 from poet.chipsets import M4F, MKR1000, JetsonTX2, RPi, RPiNoCache
 from poet.power_computation import DNNLayer, GradientLayer, get_net_costs
+from poet.poet_solver import POETSolution
 from poet.utils.checkmate.core.dfgraph import DFGraph
 from poet.utils.checkmate.core.graph_builder import GraphBuilder
 from poet.utils.checkmate.core.utils.definitions import PathLike
+from poet.utils.checkmate.core.utils.scheduler import schedule_from_rs
 from poet.utils.checkmate.plot.graph_plotting import plot_dfgraph
 
 
@@ -107,3 +110,77 @@ def plot_network(
     chipset, net = get_chipset_and_net(platform, model, batch_size, mem_power_scale)
     g, *_ = make_dfgraph_costs(net, chipset)
     plot_dfgraph(g, directory, format, quiet, name)
+
+
+def print_result(result: dict):
+    solution: POETSolution = result["solution"]
+    if solution.feasible:
+        solution_msg = "successfully found an optimal solution" if solution.finished else "found a feasible solution"
+        print(
+            f"POET {solution_msg} with a memory budget of {result['ram_budget_bytes']} bytes that consumes {result['total_power_cost_cpu']:.5f} J of CPU power and {result['total_power_cost_page']:.5f} J of memory paging power"
+        )
+        if not solution.finished:
+            print("This solution is not guaranteed to be optimal - you can try increasing the time limit to find an optimal solution")
+
+        plt.matshow(solution.R)
+        plt.title("R")
+        plt.show()
+
+        plt.matshow(solution.SRam)
+        plt.title("SRam")
+        plt.show()
+
+        plt.matshow(solution.SSd)
+        plt.title("SSd")
+        plt.show()
+
+        plot_schedule(solution.R, solution.SRam, show=True, plot_mem_usage=True)
+    elif solution.finished:
+        print("POET finished solving and determined that no feasible solution exists")
+    else:
+        print("POET failed to find a feasible solution within the provided time limit")
+
+
+def plot_schedule(R, S, plot_mem_usage=False, mem_grid=None, U=None, save_file: Optional[PathLike] = None, show=False):
+    x, y = get_chipset_and_net("m0", "linear", 1, 1)
+    g, *_ = make_dfgraph_costs(y, x)
+    _, scheduler_aux_data = schedule_from_rs(g, np.array(R), np.array(S))
+    mem_grid = scheduler_aux_data.mem_grid
+
+    if plot_mem_usage:
+        # assert mem_grid is not None
+        fig, axs = plt.subplots(1, 4)
+        vmax = mem_grid
+        vmax = vmax if U is None else max(vmax, np.max(U))
+
+        # Plot slow verifier memory usage
+        axs[2].invert_yaxis()
+        axs[2].pcolormesh(mem_grid, cmap="Greys", vmin=0, vmax=vmax[0][0])
+        axs[2].set_title("Memory usage (verifier)")
+
+        # Plot solver memory usage variables
+        axs[3].invert_yaxis()
+        axs[3].set_title("Memory usage (solved)")
+        if U is not None:
+            axs[3].pcolormesh(U, cmap="Greys", vmin=0, vmax=vmax)
+
+        fig.set_size_inches(28, 6)
+    else:
+        fig, axs = plt.subplots(1, 2)
+        fig.set_size_inches(18, 6)
+
+    axs[0].invert_yaxis()
+    axs[0].pcolormesh(R, cmap="Greys", vmin=0, vmax=1)
+    axs[0].set_title("R")
+
+    axs[1].invert_yaxis()
+    axs[1].pcolormesh(S, cmap="Greys", vmin=0, vmax=1)
+    axs[1].set_title("S")
+
+    if show:
+        plt.show()
+    if save_file:
+        path = Path(save_file)
+        path.parents[0].mkdir(parents=True, exist_ok=True)
+        fig.savefig(path)
+        plt.close(fig)

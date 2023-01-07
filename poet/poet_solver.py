@@ -18,7 +18,7 @@ class POETSolution:
     Mout: np.ndarray
     FreeE: np.ndarray
     U: np.ndarray
-    optimal: bool
+    finished: bool
     feasible: bool
     solve_time_s: Optional[float] = float("inf")
 
@@ -188,7 +188,7 @@ class POETSolver:
             Mout=self.get_result(self.MOut),
             FreeE=self.get_result(self.Free_E),
             U=self.get_result(self.U, dtype=float),
-            optimal=self.m.status == pl.LpStatusOptimal,
+            finished=self.m.status in [pl.LpStatusOptimal, pl.LpStatusInfeasible],
             feasible=self.is_feasible(),
             solve_time_s=t.elapsed,
         )
