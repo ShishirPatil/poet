@@ -114,14 +114,12 @@ def plot_network(
 def print_result(result: dict):
     solution: POETSolution = result["solution"]
     if solution.feasible:
-        solution_msg = "successfully found an optimal solution" if solution.optimal else "found a feasible solution"
+        solution_msg = "successfully found an optimal solution" if solution.finished else "found a feasible solution"
         print(
-            f"POET {solution_msg} with a memory budget of {result['ram_budget_bytes']} bytes that consumes {result['total_power_cost_cpu']} J of CPU power and {result['total_power_cost_page']} J of memory paging power"
+            f"POET {solution_msg} with a memory budget of {result['ram_budget_bytes']} bytes that consumes {result['total_power_cost_cpu']:.5f} J of CPU power and {result['total_power_cost_page']:.5f} J of memory paging power"
         )
-        if not solution.optimal:
-            print(
-                "This solution is not guaranteed to be optimal - you can try increasing the solve time [time_limit_s] to find an optimal solution"
-            )
+        if not solution.finished:
+            print("This solution is not guaranteed to be optimal - you can try increasing the time limit to find an optimal solution")
 
         plt.matshow(solution.R)
         plt.title("R")
