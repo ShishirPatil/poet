@@ -1,8 +1,17 @@
-from poet.power_computation import (AvgPool2d, BatchNorm2d, Conv2dLayer,
-                                    CrossEntropyLoss, FlattenLayer,
-                                    GradientLayer, InputLayer, LinearLayer,
-                                    MaxPool2d, ReLULayer, SkipAddLayer,
-                                    get_net_costs)
+from poet.power_computation import (
+    AvgPool2d,
+    BatchNorm2d,
+    Conv2dLayer,
+    CrossEntropyLoss,
+    FlattenLayer,
+    GradientLayer,
+    InputLayer,
+    LinearLayer,
+    MaxPool2d,
+    ReLULayer,
+    SkipAddLayer,
+    get_net_costs,
+)
 
 # Resnet implemented from the paper, not from PyTorch.
 

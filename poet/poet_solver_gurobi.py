@@ -242,7 +242,7 @@ class POETSolverGurobi:
             Mout=self.get_result(self.MOut, (self.T, self.T)),
             FreeE=self.get_result(self.Free_E, (self.T, len(self.g.edge_list))),
             U=self.get_result(self.U, (self.T, self.T), dtype=np.float),
-            optimal=self.m.status == GRB.OPTIMAL,
+            finished=self.m.status in [GRB.OPTIMAL, GRB.INFEASIBLE],
             feasible=is_feasible,
             solve_time_s=solve_time,
         )

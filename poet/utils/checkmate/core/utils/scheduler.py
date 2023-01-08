@@ -6,7 +6,6 @@ import numpy as np
 
 from poet.utils.checkmate.core.dfgraph import DFGraph
 from poet.utils.checkmate.core.schedule import OperatorEvaluation, AllocateRegister, DeallocateRegister, Schedule, SchedulerAuxData
-from poet.utils.checkmate.core.utils.definitions import active_env_var_flags
 from poet.utils.checkmate.core.utils.timer import Timer
 
 
@@ -25,6 +24,7 @@ class ScheduleBuilder:
         self.next_free_register_id = 0
         self.verbosity = verbosity
         self.ram_timeline = []  # type: List[int]
+        self.allocate_register(0)
 
     def is_op_cached(self, op_id: int):
         return op_id in self.live_registers.keys()
@@ -49,14 +49,14 @@ class ScheduleBuilder:
         return reg.register_id
 
     def run_operator(self, op_id: int, update_aux_vars: bool):
-        if not all([pred in self.live_registers.keys() for pred in self.g.predecessors(op_id)]):
+        if not all([pred == 0 or pred in self.live_registers.keys() for pred in self.g.predecessors(op_id)]):
             raise InfeasibleScheduleError(
                 "Dependency not fulfilled for op #{}, ops in ram now are {} but I need {}".format(
                     op_id, set(self.live_registers.keys()), self.g.predecessors(op_id)
                 )
             )
         out_reg = self.allocate_register(op_id)
-        in_regs = {pred_id: self.live_registers[pred_id] for pred_id in self.g.predecessors(op_id)}
+        in_regs = {pred_id: self.live_registers[pred_id] for pred_id in self.g.predecessors(op_id) if pred_id != 0}
         eval_op = OperatorEvaluation(
             op_id,
             in_regs,

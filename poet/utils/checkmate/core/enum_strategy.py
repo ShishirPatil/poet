@@ -17,8 +17,8 @@ class SolveStrategy(Enum):
     APPROX_DET_RANDOM_THRESH_ROUND_LP = "APPROX_DET_RANDOM_THRESH_ROUND_LP"
     APPROX_RANDOMIZED_ROUND = "APPROX_RANDOMIZED_ROUND"
     LB_LP = "LB_LP"
-    SIMRD = 'SIMRD'
-    SIMRD_MSPS = 'SIMRD_MSPS'
+    SIMRD = "SIMRD"
+    SIMRD_MSPS = "SIMRD_MSPS"
 
     @classmethod
     def get_description(cls, val, model_name=None):
@@ -66,7 +66,6 @@ class SolveStrategy(Enum):
             cls.LB_LP: ("r", "p", fullsize),
             cls.SIMRD: ("r", ".", fullsize),
             cls.SIMRD_MSPS: ("m", ".", fullsize),
-
         }
         if val in mapping:
             return mapping[val]
