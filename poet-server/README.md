@@ -1,6 +1,6 @@
 # POET Server Setup
 
-In this guide, we will show you how to set up the POET ILP server for use locally or as a cloud service.. We use this to host our POET server that powers requests from the [POET Demo Colab](https://colab.research.google.com/drive/1iup_edJd9zB1tfVBHXLmkWOT5yoSmXzz?usp=sharing) notebook. You do not need the POET server to try POET locally, but feel free to use it to set-up your own servers to serve POET. 
+In this guide, we will show you how to set up the POET ILP server for use locally or as a hosted service. We use this to host our POET server that powers requests from the [POET Demo Colab](https://colab.research.google.com/drive/1iup_edJd9zB1tfVBHXLmkWOT5yoSmXzz?usp=sharing) notebook. You do not need to set-up a POET-server to use POET, but feel free to use it to set-up your hosted service. 
 
 POET's Integer Linear Program (ILP) formulation is compatible with a variety of solvers, including Gurobi and COIN-OR CBC. In this guide, we will demonstrate how to set it up using both of these solvers.
 
@@ -28,7 +28,7 @@ The ILP solver defaults to using the COIN-OR CBC solver when Gurobi isn't availa
 
 ## Option 2: Running the Server Locally within a Docker Container
 
-We include a Docker image that can be used to run the server. To run the server locally in a Docker container, follow these steps:
+We include a Docker image that can be used to run the server. 
 
 Prebuilt Docker images are available at `public.ecr.aws/i5z6k9k2/poet-server`
 
@@ -51,12 +51,12 @@ Or, you can build the docker container yourself following the steps below.
 
 ## Option 3: Hosting POET server on an AWS EC2 Instance
 
-Ensure that you have moved the `gurobi.lic` file (If you want to use the Gurobi optimizer) you downloaded earlier to the EC2 instance. Ensure that Port 80 is open for ingress network. 
+Ensure that you have moved the `gurobi.lic` file (if you want to use the Gurobi optimizer) you downloaded earlier to the EC2 instance. Ensure that Port 80 is open for ingress traffic. 
  
 
 ## Making Requests 
 
-To issue requests to the POET server, you can use the following Python code. Here, we use the Demo POET-server hosted at IP `54.189.43.62`:
+To issue requests to the POET server, you can use the following Python code. Here, we use the demo POET-server hosted at IP `54.189.43.62`:
 
 ```python
 import requests
@@ -68,6 +68,8 @@ response = requests.get("http://54.189.43.62/solve", {
     "runtime_budget": 1.253,
     "solver": "gurobi",
 })
+
+print(response.json())
 ```
 
 
