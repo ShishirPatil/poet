@@ -1,6 +1,8 @@
-# POET ILP Server Setup
+# POET Server Setup
 
-This file describes how to setup the POET ILP server, either for use locally or as an external cloud service.
+In this guide, we will show you how to set up the POET ILP server for use locally or as a cloud service.. We use this to host our POET server that powers requests from the [POET Demo Colab](https://colab.research.google.com/drive/1iup_edJd9zB1tfVBHXLmkWOT5yoSmXzz?usp=sharing) notebook. You do not need the POET server to try POET locally, but feel free to use it to set-up your own servers to serve POET. 
+
+POET's Integer Linear Program (ILP) formulation is compatible with a variety of solvers, including Gurobi and COIN-OR CBC. In this guide, we will demonstrate how to set it up using both of these solvers.
 
 ## Setting Up Gurobi (Optional)
 
@@ -24,51 +26,49 @@ The ILP solver defaults to using the COIN-OR CBC solver when Gurobi isn't availa
     - You can optionally run `DEV=1 python3 server.py` to enable reload mode, which will automatically restart the server when you make changes to the code.
 7. You can now make requests to the server at `http://localhost/solve`.
 
-## Option 2: Running the Server Locally in a Docker Container
+## Option 2: Running the Server Locally within a Docker Container
 
-This folder also contains a Docker image that can be used to run the server. To run the server locally in a Docker container, follow these steps:
+We include a Docker image that can be used to run the server. To run the server locally in a Docker container, follow these steps:
+
+Prebuilt Docker images are available at `public.ecr.aws/i5z6k9k2/poet-server`
+
+You can pull an image and start the server using:
+
+```bash
+docker pull public.ecr.aws/i5z6k9k2/poet-server:latest
+docker run -p 80:80 -v ~/gurobi.lic:/opt/gurobi/gurobi.lic public.ecr.aws/i5z6k9k2/poet-server
+```
+
+Or, you can build the docker container yourself following the steps below. 
+
 
 1. Ensure you have [Docker Compose](https://docs.docker.com/compose/install/) installed.
 2. Clone this repository by running `git clone https://github.com/ShishirPatil/poet`.
 3. If using Gurobi, move the `gurobi.lic` file you downloaded in the previous step to the `poet-server` directory of this repository (i.e. to `poet-server/gurobi.lic`).
 4. Run `cd poet-server` to navigate to the `poet-server` directory.
 5. Run `docker compose up --build` to build and start the Docker container.
-6. You can now make requests to the server at `http://localhost/solve`.
+6. You can now make GET requests to the server at `http://localhost/solve` as shown below.
 
-## Option 3: Deploying the Dockerized Server on AWS
+## Option 3: Hosting POET server on an AWS EC2 Instance
 
-The Docker image described above is hosted on Docker Hub for convenient use on AWS. To run the server on AWS, follow these steps:
+Ensure that you have moved the `gurobi.lic` file (If you want to use the Gurobi optimizer) you downloaded earlier to the EC2 instance. Ensure that Port 80 is open for ingress network. 
+ 
 
-### 2. Creating an AWS EC2 Instance
+## Making Requests 
 
-1. Create an AWS account [here](https://aws.amazon.com/) if you don't already have one.
-2. Open the AWS dashboard and navigate to the EC2 service. Use the instance creation wizard to create a new EC2 instance.
-    - Make sure to use the default Amazon Linux 2 AMI
-    - Set up SSH key pair authentication if needed. Move the `.pem` file to `~/.ssh/` and run `chmod 400 ~/.ssh/<keypair>.pem` to ensure that you can SSH into the instance.
-    - You can use the default security group, but you may want to add a rule to allow SSH access from your IP address only.
-3. Set up your SSH configuration file to automatically use the key pair. Add the following to `~/.ssh/config`:
-    ```
-    Host poet-server
-        HostName <insert Public DNS URL from AWS>
-        User ec2-user
-        IdentityFile <insert path to your key pair>
-    ```
-4. If using Gurobi: move the `gurobi.lic` file you downloaded earlier to the EC2 instance by running the following command on your local computer: `scp path/to/local/gurobi.lic gurobi:~/`
+To issue requests to the POET server, you can use the following Python code. Here, we use the Demo POET-server hosted at IP `54.189.43.62`:
 
-### 3. Running the Gurobi Server with Docker
+```python
+import requests
 
-1. SSH into the EC2 instance by running `ssh poet-server`.
-2. Run the following commands to install and start Docker:
-    ```
-    sudo apt update -y
-    sudo apt install -y docker.io
-    sudo service docker start
-    sudo usermod -a -G docker <username>
-    ```
-3. Exit the SSH session and reconnect to ensure that the Docker group changes take effect.
-4. Run the following commands to pull the image and start the Gurobi server:
-    ```
-    docker pull anishshanbhag/poet-server
-    docker run -p 80:80 -v ~/gurobi.lic:/opt/gurobi/gurobi.lic anishshanbhag/poet-server
-    ```
-5. You should now be able to query the Gurobi server at the Public DNS URL from AWS.
+response = requests.get("http://54.189.43.62/solve", {
+    "model": "linear",
+    "platform": "m0",
+    "ram_budget": 90000000,
+    "runtime_budget": 1.253,
+    "solver": "gurobi",
+})
+```
+
+
+

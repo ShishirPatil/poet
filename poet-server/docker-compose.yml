@@ -2,7 +2,7 @@ version: "3.3"
 
 services:
     server:
-        image: anishshanbhag/poet-server
+        image: public.ecr.aws/i5z6k9k2/poet-server:latest
         shm_size: 2.5gb
         tty: true
         ports:

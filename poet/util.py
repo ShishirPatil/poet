@@ -64,6 +64,7 @@ def extract_costs_from_dfgraph(g: DFGraph, sd_card_multipler=5.0):
     page_out_cost_vec = cpu_cost_vec * sd_card_multipler
     return cpu_cost_vec, page_in_cost_vec, page_out_cost_vec
 
+
 def get_chipset_and_net(platform: str, model: str, batch_size: int, mem_power_scale: float = 1.0):
     if platform == "m0":
         chipset = MKR1000
@@ -101,19 +102,14 @@ def get_chipset_and_net(platform: str, model: str, batch_size: int, mem_power_sc
 
     return chipset, net
 
+
 def plot_network(
-    platform: str,
-    model: str,
-    directory: str,
-    batch_size: int = 1,
-    mem_power_scale: float = 1.0,
-    format="pdf",
-    quiet=True,
-    name=""
+    platform: str, model: str, directory: str, batch_size: int = 1, mem_power_scale: float = 1.0, format="pdf", quiet=True, name=""
 ):
     chipset, net = get_chipset_and_net(platform, model, batch_size, mem_power_scale)
     g, *_ = make_dfgraph_costs(net, chipset)
     plot_dfgraph(g, directory, format, quiet, name)
+
 
 def print_result(result: dict):
     solution: POETSolution = result["solution"]
@@ -123,7 +119,9 @@ def print_result(result: dict):
             f"POET {solution_msg} with a memory budget of {result['ram_budget_bytes']} bytes that consumes {result['total_power_cost_cpu']} J of CPU power and {result['total_power_cost_page']} J of memory paging power"
         )
         if not solution.optimal:
-            print("This solution is not guaranteed to be optimal - you can try increasing the time limit to find an optimal solution")
+            print(
+                "This solution is not guaranteed to be optimal - you can try increasing the solve time [time_limit_s] to find an optimal solution"
+            )
 
         plt.matshow(solution.R)
         plt.title("R")
@@ -137,4 +135,6 @@ def print_result(result: dict):
         plt.title("SSd")
         plt.show()
     else:
-        print("POET failed to find a feasible solution within the provided time limit")
+        print(
+            "POET failed to find a feasible solution within the provided time limit. \n Either a) increase the memory and training time budgets, and/or b) increase the solve time [total_power_cost_page]"
+        )
