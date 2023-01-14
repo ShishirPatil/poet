@@ -18,7 +18,7 @@ jobs:
           python -m pip install --upgrade pip
           pip install pytest black
           pip install -e .
-      - name: Lint with Black
+      - name: Test formatting with Black
         run: |
           black --check --line-length 140 .
       - name: Test with pytest

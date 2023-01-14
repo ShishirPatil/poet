@@ -19,6 +19,7 @@ from poet.utils.checkmate.core.graph_builder import GraphBuilder
 from poet.utils.checkmate.core.utils.definitions import PathLike
 from poet.utils.checkmate.plot.graph_plotting import plot_dfgraph
 
+
 @dataclass
 class POETResult:
     ram_budget: float
@@ -30,6 +31,7 @@ class POETResult:
     total_runtime: float
     feasible: bool
     solution: POETSolution
+
 
 def save_network_repr(net: List[DNNLayer], readable_path: PathLike = None, pickle_path: PathLike = None):
     if readable_path is not None:

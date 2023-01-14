@@ -9,6 +9,7 @@ from poet.poet_solver import POETSolution, POETSolver
 from poet.poet_solver_gurobi import POETSolverGurobi
 from poet.util import get_chipset_and_net, make_dfgraph_costs, plot_dfgraph, print_result, POETResult
 
+
 def solve(
     model: Literal[
         "linear",
@@ -131,7 +132,7 @@ def solve(
         total_power_cost_cpu=total_power_cost_cpu,
         total_runtime=total_runtime,
         feasible=solution.feasible,
-        solution=solution
+        solution=solution,
     )
 
     return result
