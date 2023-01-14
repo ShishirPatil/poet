@@ -1,3 +1,4 @@
+from dataclasses import dataclass
 import pickle
 from pathlib import Path
 from typing import List
@@ -18,6 +19,17 @@ from poet.utils.checkmate.core.graph_builder import GraphBuilder
 from poet.utils.checkmate.core.utils.definitions import PathLike
 from poet.utils.checkmate.plot.graph_plotting import plot_dfgraph
 
+@dataclass
+class POETResult:
+    ram_budget: float
+    runtime_budget_ms: float
+    paging: bool
+    remat: bool
+    total_power_cost_page: float
+    total_power_cost_cpu: float
+    total_runtime: float
+    feasible: bool
+    solution: POETSolution
 
 def save_network_repr(net: List[DNNLayer], readable_path: PathLike = None, pickle_path: PathLike = None):
     if readable_path is not None:
@@ -111,12 +123,12 @@ def plot_network(
     plot_dfgraph(g, directory, format, quiet, name)
 
 
-def print_result(result: dict):
-    solution: POETSolution = result["solution"]
+def print_result(result: POETResult):
+    solution = result.solution
     if solution.feasible:
         solution_msg = "successfully found an optimal solution" if solution.finished else "found a feasible solution"
         print(
-            f"POET {solution_msg} with a memory budget of {result['ram_budget_bytes']} bytes that consumes {result['total_power_cost_cpu']:.5f} J of CPU power and {result['total_power_cost_page']:.5f} J of memory paging power"
+            f"POET {solution_msg} with a memory budget of {result.ram_budget} bytes that consumes {result.total_power_cost_cpu:.5f} J of CPU power and {result.total_power_cost_page:.5f} J of memory paging power"
         )
         if not solution.finished:
             print("This solution is not guaranteed to be optimal - you can try increasing the time limit to find an optimal solution")

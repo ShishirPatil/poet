@@ -241,7 +241,7 @@ class POETSolverGurobi:
             Min=self.get_result(self.MIn, (self.T, self.T)),
             Mout=self.get_result(self.MOut, (self.T, self.T)),
             FreeE=self.get_result(self.Free_E, (self.T, len(self.g.edge_list))),
-            U=self.get_result(self.U, (self.T, self.T), dtype=np.float),
+            U=self.get_result(self.U, (self.T, self.T), dtype=float),
             finished=self.m.status in [GRB.OPTIMAL, GRB.INFEASIBLE],
             feasible=is_feasible,
             solve_time_s=solve_time,

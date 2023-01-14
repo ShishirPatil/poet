@@ -1,13 +1,13 @@
 from argparse import ArgumentParser
+from dataclasses import dataclass
 from typing import Literal, Optional
 
 import numpy as np
 
 from poet import solve
-from poet.poet_solver import POETSolver
+from poet.poet_solver import POETSolution, POETSolver
 from poet.poet_solver_gurobi import POETSolverGurobi
-from poet.util import get_chipset_and_net, make_dfgraph_costs, plot_dfgraph, print_result
-
+from poet.util import get_chipset_and_net, make_dfgraph_costs, plot_dfgraph, print_result, POETResult
 
 def solve(
     model: Literal[
@@ -122,17 +122,16 @@ def solve(
     else:
         total_power_cost_page, total_power_cost_cpu, total_runtime = None, None, None
 
-    result = dict(
-        ram_budget_bytes=ram_budget,
+    result = POETResult(
+        ram_budget=ram_budget,
         runtime_budget_ms=runtime_budget_ms,
         paging=paging,
         remat=remat,
-        integral=True,
-        solution=solution,
         total_power_cost_page=total_power_cost_page,
         total_power_cost_cpu=total_power_cost_cpu,
         total_runtime=total_runtime,
         feasible=solution.feasible,
+        solution=solution
     )
 
     return result
