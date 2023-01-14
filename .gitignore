@@ -5,3 +5,4 @@ dist
 *.log
 **/*.lic
 .vscode
+.editorconfig
