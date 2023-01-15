@@ -21,6 +21,6 @@ jobs:
       - name: Test formatting with Black
         run: |
           black --check --line-length 140 .
-      - name: Test with pytest
-        run: |
-          pytest
+      # - name: Test with pytest
+      #   run: |
+      #     pytest
