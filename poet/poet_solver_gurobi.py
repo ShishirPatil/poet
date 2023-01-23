@@ -6,10 +6,10 @@ import numpy as np
 from gurobipy import GRB, Model, quicksum
 from loguru import logger
 
+from poet.poet_solver import POETSolution
 from poet.utils.checkmate.core.dfgraph import DFGraph
 from poet.utils.checkmate.core.utils.definitions import PathLike
 from poet.utils.checkmate.core.utils.timer import Timer
-from poet.poet_solver import POETSolution
 
 # noinspection PyPackageRequirements
 
@@ -233,21 +233,16 @@ class POETSolverGurobi:
                     self.m.optimize()
         solve_time = t.elapsed
 
-        if self.m.status == GRB.INFEASIBLE:
-            is_feasible = False
-        elif self.m.solCount < 1:
-            is_feasible = False
-            logger.error(f"Model status is {self.m.status} (not infeasible), but solCount is {self.m.solCount}")
-        else:
-            is_feasible = True
+        is_feasible = self.m.status != GRB.INFEASIBLE and self.m.solCount >= 1
         return POETSolution(
             R=self.get_result(self.R, (self.T, self.T)),
-            Sram=self.get_result(self.SRam, (self.T, self.T)),
-            Ssd=self.get_result(self.SSd, (self.T, self.T)),
+            SRam=self.get_result(self.SRam, (self.T, self.T)),
+            SSd=self.get_result(self.SSd, (self.T, self.T)),
             Min=self.get_result(self.MIn, (self.T, self.T)),
             Mout=self.get_result(self.MOut, (self.T, self.T)),
             FreeE=self.get_result(self.Free_E, (self.T, len(self.g.edge_list))),
-            U=self.get_result(self.U, (self.T, self.T), dtype=np.float),
+            U=self.get_result(self.U, (self.T, self.T), dtype=float),
+            finished=self.m.status in [GRB.OPTIMAL, GRB.INFEASIBLE],
             feasible=is_feasible,
             solve_time_s=solve_time,
         )

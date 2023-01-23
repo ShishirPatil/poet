@@ -1,7 +1,7 @@
 # POET
-By Shishir G. Patil, Paras Jain, Prabal Dutta, Ion Stoica, and Joseph E. Gonzalez  ([Project Website](https://shishirpatil.github.io/poet/))
+By Shishir G. Patil, Paras Jain, Prabal Dutta, Ion Stoica, and Joseph E. Gonzalez  ([Project Website](https://poet.cs.berkeley.edu/))
 
-![](assets/img/logo.png)
+![](https://github.com/ShishirPatil/poet/blob/gh-pages/assets/img/logo.png)
 
 _See the paper!_ [https://arxiv.org/abs/2207.07697](https://arxiv.org/abs/2207.07697)
 
@@ -13,14 +13,16 @@ ResNets on smartphones and tiny ARM Cortex-M devices :muscle:
 Reach out to us at [sgp@berkeley.edu](mailto:sgp@berkeley.edu), if you have large models that you are trying to train - be it on GPUs, or your commodity edge devices such as laptops, smartphones, raspberry-pis, ARM Cortex M and A class, fitbits, etc.
 
 
-## Get Started
+## Get Started [![Open In Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/drive/1iup_edJd9zB1tfVBHXLmkWOT5yoSmXzz?usp=sharing)
 
 ### Installation
 
-You can install POET with:
+Clone the repository and install POET:
 
 ```bash
-python setup.py install
+git clone https://github.com/ShishirPatil/poet.git
+cd poet/ 
+pip install -e .
 ```
 
 ### Setting Up Gurobi (Recommended)
@@ -48,7 +50,7 @@ If you are affiliated with an academic institution, you can acquire a free Gurob
 Once you have installed POET and optionally configured Gurobi, you can run the solver via the command line. Here's an example:
 
 ```bash
-python -m poet --model resnet18_cifar --platform a72 --ram-budget 3000000 --runtime-budget 7.6
+python poet/solve.py --model resnet18_cifar --platform a72 --ram-budget 3000000 --runtime-budget 7.6
 ```
 
 ### Using the Solver API Directly

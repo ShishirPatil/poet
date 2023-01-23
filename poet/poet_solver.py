@@ -12,12 +12,13 @@ from poet.utils.checkmate.core.utils.timer import Timer
 @dataclass
 class POETSolution:
     R: np.ndarray
-    Sram: np.ndarray
-    Ssd: np.ndarray
+    SRam: np.ndarray
+    SSd: np.ndarray
     Min: np.ndarray
     Mout: np.ndarray
     FreeE: np.ndarray
     U: np.ndarray
+    finished: bool
     feasible: bool
     solve_time_s: Optional[float] = float("inf")
 
@@ -163,24 +164,32 @@ class POETSolver:
             for i in range(self.T):
                 self.m += self.R[t][i] == True if t == i else False
 
+    def is_feasible(self):
+        return self.m.status not in [
+            pl.LpStatusInfeasible,
+            pl.LpStatusNotSolved,
+            pl.LpStatusUndefined,
+            pl.LpStatusUnbounded,
+        ]
+
     def get_result(self, var_matrix, dtype=int):
-        if self.m.status != pl.LpStatusOptimal:
+        if not self.is_feasible():
             return None
         return [[dtype(pl.value(var_matrix[i][j])) for j in range(len(var_matrix[0]))] for i in range(len(var_matrix))]
 
     def solve(self):
         with Timer("solve_timer") as t:
             self.m.solve(self.solver)
-        is_feasible = self.m.status == pl.LpStatusOptimal
         return POETSolution(
             R=self.get_result(self.R),
-            Sram=self.get_result(self.SRam),
-            Ssd=self.get_result(self.SSd),
+            SRam=self.get_result(self.SRam),
+            SSd=self.get_result(self.SSd),
             Min=self.get_result(self.MIn),
             Mout=self.get_result(self.MOut),
             FreeE=self.get_result(self.Free_E),
             U=self.get_result(self.U, dtype=float),
-            feasible=is_feasible,
+            finished=self.m.status in [pl.LpStatusOptimal, pl.LpStatusInfeasible],
+            feasible=self.is_feasible(),
             solve_time_s=t.elapsed,
         )
 

@@ -36,7 +36,7 @@ if __name__ == "__main__":
     for layer in net:
         print(layer)
 
-    print("### Profiles ###")
-    resource = get_net_costs(net, CHIPSET)
-    for _list in resource:
-        print(_list, resource[_list])
+    # print("### Profiles ###")
+    # resource = get_net_costs(net, CHIPSET)
+    # for _list in resource:
+    #     print(_list, resource[_list])

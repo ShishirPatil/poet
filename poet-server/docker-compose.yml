@@ -1,0 +1,14 @@
+version: "3.3"
+
+services:
+    server:
+        image: public.ecr.aws/shishirpatil/poet-server:latest
+        shm_size: 2.5gb
+        tty: true
+        ports:
+            - 80:80
+        build:
+            context: ../
+            dockerfile: poet-server/Dockerfile
+        volumes:
+            - ${PWD}/gurobi.lic:/opt/gurobi/gurobi.lic
