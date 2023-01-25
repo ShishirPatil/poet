@@ -51,7 +51,7 @@ def solve(
     :param time_limit_s: The time limit for solving in seconds.
     :param solve_threads: The number of threads to use for solving.
     """
-    chipset, net = get_chipset_and_net(
+    chipset, net, *_ = get_chipset_and_net(
         platform=platform,
         model=model,
         batch_size=batch_size,
@@ -81,7 +81,7 @@ def solve(
     runtime_budget_ms = runtime_budget * total_runtime
 
     if use_actual_gurobi:
-        solver = POETSolverGurobi(
+        ilp_solver = POETSolverGurobi(
             g,
             cpu_power_cost_vec_joule,
             pagein_power_cost_vec_joule,
@@ -94,7 +94,7 @@ def solve(
             solve_threads=solve_threads,
         )
     else:
-        solver = POETSolver(
+        ilp_solver = POETSolver(
             g,
             cpu_power_cost_vec_joule=cpu_power_cost_vec_joule,
             pagein_power_cost_vec_joule=pagein_power_cost_vec_joule,
@@ -108,7 +108,7 @@ def solve(
             solver=solver,
         )
 
-    solution = solver.solve()
+    solution = ilp_solver.solve()
 
     if solution is not None and solution.feasible:
         cpu_cost_vec = np.asarray([g.cost_cpu[i] for i in range(g.size)])[np.newaxis, :].T

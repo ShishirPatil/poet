@@ -91,36 +91,54 @@ def get_chipset_and_net(platform: str, model: str, batch_size: int, mem_power_sc
     elif platform == "jetsontx2":
         chipset = JetsonTX2
     else:
-        raise NotImplementedError()
+        raise NotImplementedError(f"Platform {platform} not implemented.")
 
     chipset["MEMORY_POWER"] *= mem_power_scale
 
     if model == "linear":
         net = make_linear_network()
+        # TODO: these were randomly picked
+        ram_budget_start = 1.0e07
+        ram_budget_end = 1.0e08
     elif model == "vgg16":
         net = vgg16(batch_size)
+        ram_budget_start = 2.57e07
+        ram_budget_end = 1.15e08
     elif model == "vgg16_cifar":
         net = vgg16(batch_size, 10, (3, 32, 32))
+        ram_budget_start = 2.57e07 / 49
+        ram_budget_end = 1.15e08 / 49
     elif model == "resnet18":
         net = resnet18(batch_size)
+        ram_budget_start = 6.42e06
+        ram_budget_end = 2.85e07
     elif model == "resnet50":
         net = resnet50(batch_size)
+        ram_budget_start = 6.97e06
+        ram_budget_end = 1.27e08
     elif model == "resnet18_cifar":
         net = resnet18_cifar(batch_size, 10, (3, 32, 32))
+        ram_budget_start = 196608
+        ram_budget_end = 2339408
     elif model == "bert":
         net = BERTBase(SEQ_LEN=512, HIDDEN_DIM=768, I=64, HEADS=12, NUM_TRANSFORMER_BLOCKS=12)
+        # TODO: this is very broken
+        ram_budget_start = 1e6
+        ram_budget_end = 1e9
     elif model == "transformer":
         net = BERTBase(SEQ_LEN=512, HIDDEN_DIM=768, I=64, HEADS=12, NUM_TRANSFORMER_BLOCKS=1)
+        ram_budget_start = 3e7 # TODO: this was changed
+        ram_budget_end = 4e7
     else:
-        raise NotImplementedError()
+        raise NotImplementedError(f"Model {model} not implemented.")
 
-    return chipset, net
+    return chipset, net, ram_budget_start, ram_budget_end
 
 
 def plot_network(
     platform: str, model: str, directory: str, batch_size: int = 1, mem_power_scale: float = 1.0, format="pdf", quiet=True, name=""
 ):
-    chipset, net = get_chipset_and_net(platform, model, batch_size, mem_power_scale)
+    chipset, net, *_ = get_chipset_and_net(platform, model, batch_size, mem_power_scale)
     g, *_ = make_dfgraph_costs(net, chipset)
     plot_dfgraph(g, directory, format, quiet, name)
 
