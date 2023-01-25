@@ -33,6 +33,7 @@ def solve(
     # solver defines the model using PuLP and can swap in either cbc or Gurobi solver
     solver: Optional[Literal["gurobi", "cbc"]] = None,
     print_power_costs: bool = False,
+    print_graph_info: bool = True,
     plot_directory: Optional[str] = None,
     time_limit_s: float = 1e100,
     solve_threads: Optional[int] = None,
@@ -76,9 +77,12 @@ def solve(
         print("Page-out power cost:", pageout_power_cost_vec_joule)
 
     total_runtime = sum(g.cost_cpu.values())
-
-    total_runtime = sum(g.cost_cpu.values())
     runtime_budget_ms = runtime_budget * total_runtime
+    total_ram = sum(g.cost_ram[i] for i in g.vfwd)
+
+    if print_graph_info:
+        print(f"Total runtime of graph (forward + backward) = {total_runtime} milliseconds")
+        print(f"Total RAM consumption of forward pass = {total_ram} bytes")
 
     if use_actual_gurobi:
         solver = POETSolverGurobi(
@@ -158,6 +162,7 @@ if __name__ == "__main__":
     parser.add_argument("--solver", type=str, default="gurobi", choices=["gurobi", "cbc"])
     parser.add_argument("--use-actual-gurobi", action="store_true", default=False)
     parser.add_argument("--print-power-costs", action="store_true", default=False)
+    parser.add_argument("--print-graph-info", action="store_true", default=True)
     parser.add_argument("--plot-directory", type=str, default=None)
     args = parser.parse_args()
 
@@ -175,6 +180,7 @@ if __name__ == "__main__":
         solver=args.solver,
         use_actual_gurobi=args.use_actual_gurobi,
         print_power_costs=args.print_power_costs,
+        print_graph_info=args.print_graph_info,
         plot_directory=args.plot_directory,
     )
 

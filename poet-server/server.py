@@ -50,6 +50,7 @@ def solve_handler(
             solver=solver,
             time_limit_s=time_limit_s,
             solve_threads=solve_threads,
+            print_graph_info=False,
         )
     except Exception as e:
         logger.exception(e)
