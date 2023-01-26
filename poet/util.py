@@ -146,7 +146,11 @@ def print_result(result: POETResult):
         plt.matshow(solution.SSd)
         plt.title("SSd")
         plt.show()
+    elif solution.finished:
+        print(
+            "The problem is infeasible since the provided memory budget and/or runtime budget are too small to run the network on the given platform."
+        )
     else:
         print(
-            "POET failed to find a feasible solution within the provided time limit. \n Either a) increase the memory and training time budgets, and/or b) increase the solve time [total_power_cost_page]"
+            "POET failed to find a feasible solution within the provided time limit. \n Either a) increase the memory and training time budgets, and/or b) increase the solve time (time_limit_s)"
         )

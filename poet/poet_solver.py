@@ -28,28 +28,28 @@ class POETSolver:
         self,
         g: DFGraph,
         # cost weighting
-        cpu_power_cost_vec_joule,
-        pagein_power_cost_vec_joule,
-        pageout_power_cost_vec_joule,
+        cpu_power_cost_vec_joule: np.ndarray,
+        pagein_power_cost_vec_joule: np.ndarray,
+        pageout_power_cost_vec_joule: np.ndarray,
         # constraints
         ram_budget_bytes: Optional[float] = None,
         runtime_budget_ms: Optional[float] = None,
         paging=True,
         remat=True,
-        solver: Optional[Literal["cbc", "gurobi"]] = None,
+        solver: Literal["pulp-gurobi", "pulp-cbc"] = "pulp-gurobi",
         time_limit_s: Optional[float] = None,
         solve_threads: Optional[int] = None,
     ):
         self.g = g
         self.m = pl.LpProblem("POET", pl.LpMinimize)
         self.T = g.size
-        gurobi_available = "GUROBI" in pl.listSolvers(onlyAvailable=True)
-        self.solver = pl.PULP_CBC_CMD(msg=False, timeLimit=time_limit_s, threads=solve_threads)
-        if solver == "gurobi":
-            if gurobi_available:
-                self.solver = pl.GUROBI(msg=False, timeLimit=time_limit_s, solve_threads=solve_threads)
-            else:
-                print("Warning: Gurobi not available or has an incorrect installation; falling back to CBC solver")
+
+        if solver == "pulp-gurobi":
+            self.solver = pl.GUROBI(msg=False, timeLimit=time_limit_s, solve_threads=solve_threads)
+        elif solver == "pulp-cbc":
+            self.solver = pl.PULP_CBC_CMD(msg=False, timeLimit=time_limit_s, threads=solve_threads)
+        else:
+            raise NotImplementedError(f"Unknown solver: {solver}")
 
         self.runtime_budget_ms = runtime_budget_ms
         self.ram_budget_bytes = ram_budget_bytes

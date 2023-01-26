@@ -1,13 +1,13 @@
 from argparse import ArgumentParser
-from dataclasses import dataclass
 from typing import Literal, Optional
 
 import numpy as np
 
 from poet import solve
-from poet.poet_solver import POETSolution, POETSolver
+from poet.poet_solver import POETSolver
 from poet.poet_solver_gurobi import POETSolverGurobi
 from poet.util import get_chipset_and_net, make_dfgraph_costs, plot_dfgraph, print_result, POETResult
+from gurobipy import GRB, GurobiError
 
 
 def solve(
@@ -28,11 +28,9 @@ def solve(
     remat: int = 1,
     mem_power_scale=1.0,
     batch_size=1,
-    # use_actual_gurobi uses Gurobi optimizer with the model defined in Gurobi.
-    use_actual_gurobi: Optional[bool] = True,
-    # solver defines the model using PuLP and can swap in either cbc or Gurobi solver
-    solver: Optional[Literal["gurobi", "cbc"]] = None,
+    solver: Literal["gurobipy", "pulp-gurobi", "pulp-cbc"] = "gurobipy",
     print_power_costs: bool = False,
+    print_graph_info: bool = True,
     plot_directory: Optional[str] = None,
     time_limit_s: float = 1e100,
     solve_threads: Optional[int] = None,
@@ -46,7 +44,6 @@ def solve(
     :param remat: Whether to enable rematerialization.
     :param mem_power_scale: A scaling factor for the memory power.
     :param batch_size: The batch size to use for the model.
-    :param use_actual_gurobi: Whether to use the actual Gurobi solver over the PuLP wrapper.
     :param solver: The LP solver to use.
     :param time_limit_s: The time limit for solving in seconds.
     :param solve_threads: The number of threads to use for solving.
@@ -76,39 +73,40 @@ def solve(
         print("Page-out power cost:", pageout_power_cost_vec_joule)
 
     total_runtime = sum(g.cost_cpu.values())
-
-    total_runtime = sum(g.cost_cpu.values())
     runtime_budget_ms = runtime_budget * total_runtime
+    total_ram = sum(g.cost_ram[i] for i in g.vfwd)
 
-    if use_actual_gurobi:
-        solver = POETSolverGurobi(
-            g,
-            cpu_power_cost_vec_joule,
-            pagein_power_cost_vec_joule,
-            pageout_power_cost_vec_joule,
-            ram_budget,
-            runtime_budget_ms,
-            paging,
-            remat,
-            time_limit_s=time_limit_s,
-            solve_threads=solve_threads,
-        )
+    if print_graph_info:
+        print(f"Total runtime of graph (forward + backward): {total_runtime:.5f} milliseconds")
+        print(f"Total RAM consumption of forward pass: {total_ram} bytes")
+
+    solver_params = dict(
+        g=g,
+        cpu_power_cost_vec_joule=cpu_power_cost_vec_joule,
+        pagein_power_cost_vec_joule=pagein_power_cost_vec_joule,
+        pageout_power_cost_vec_joule=pageout_power_cost_vec_joule,
+        ram_budget_bytes=ram_budget,
+        runtime_budget_ms=runtime_budget_ms,
+        paging=paging,
+        remat=remat,
+        time_limit_s=time_limit_s,
+        solve_threads=solve_threads,
+    )
+
+    if solver == "gurobipy":
+        solver = POETSolverGurobi(**solver_params)
     else:
-        solver = POETSolver(
-            g,
-            cpu_power_cost_vec_joule=cpu_power_cost_vec_joule,
-            pagein_power_cost_vec_joule=pagein_power_cost_vec_joule,
-            pageout_power_cost_vec_joule=pageout_power_cost_vec_joule,
-            ram_budget_bytes=ram_budget,
-            runtime_budget_ms=runtime_budget_ms,
-            paging=paging,
-            remat=remat,
-            time_limit_s=time_limit_s,
-            solve_threads=solve_threads,
-            solver=solver,
-        )
+        solver = POETSolver(**solver_params, solver=solver)
 
-    solution = solver.solve()
+    try:
+        solution = solver.solve()
+    except GurobiError as e:
+        if e.errno == GRB.Error.SIZE_LIMIT_EXCEEDED:
+            print("A valid Gurobi license was not found; retrying with CBC solver")
+            solver = POETSolver(**solver_params, solver="pulp-cbc")
+            solution = solver.solve()
+        else:
+            raise e
 
     if solution is not None and solution.feasible:
         cpu_cost_vec = np.asarray([g.cost_cpu[i] for i in range(g.size)])[np.newaxis, :].T
@@ -155,9 +153,10 @@ if __name__ == "__main__":
     parser.add_argument("--remat", action="store_true", default=True)
     parser.add_argument("--time-limit-s", type=int, default=1e100)
     parser.add_argument("--solve-threads", type=int, default=4)
-    parser.add_argument("--solver", type=str, default="gurobi", choices=["gurobi", "cbc"])
+    parser.add_argument("--solver", type=str, default="gurobipy", choices=["gurobipy", "pulp-gurobi", "pulp-cbc"])
     parser.add_argument("--use-actual-gurobi", action="store_true", default=False)
     parser.add_argument("--print-power-costs", action="store_true", default=False)
+    parser.add_argument("--print-graph-info", action="store_true", default=True)
     parser.add_argument("--plot-directory", type=str, default=None)
     args = parser.parse_args()
 
@@ -173,8 +172,8 @@ if __name__ == "__main__":
         time_limit_s=args.time_limit_s,
         solve_threads=args.solve_threads,
         solver=args.solver,
-        use_actual_gurobi=args.use_actual_gurobi,
         print_power_costs=args.print_power_costs,
+        print_graph_info=args.print_graph_info,
         plot_directory=args.plot_directory,
     )
 
