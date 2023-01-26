@@ -32,7 +32,7 @@ def solve_handler(
     mem_power_scale=1.0,
     batch_size=1,
     use_actual_gurobi: Optional[bool] = None,
-    solver: Optional[Literal["gurobi", "cbc"]] = None,
+    solver: Literal["gurobipy", "pulp-gurobi", "pulp-cbc"] = "gurobipy",
     time_limit_s: float = 1e100,
     solve_threads: int = SOLVE_THREADS,  # different default than a direct solve
 ):
@@ -50,6 +50,7 @@ def solve_handler(
             solver=solver,
             time_limit_s=time_limit_s,
             solve_threads=solve_threads,
+            print_graph_info=False,
         )
     except Exception as e:
         logger.exception(e)
