@@ -9,6 +9,7 @@ from poet.poet_solver_gurobi import POETSolverGurobi
 from poet.util import get_chipset_and_net, make_dfgraph_costs, plot_dfgraph, print_result, POETResult
 from gurobipy import GRB, GurobiError
 
+
 def solve(
     model: Literal[
         "linear",
