@@ -21,7 +21,7 @@ Clone the repository and install POET:
 
 ```bash
 git clone https://github.com/ShishirPatil/poet.git
-cd poet/ 
+cd poet/
 pip install -e .
 ```
 
@@ -61,15 +61,14 @@ If you'd like to use the solver API directly, you can do so as follows:
 from poet import solve
 
 # ... use the solver API here
-solve(**{
-    "model": "linear",
-    "platform": "resnet18_cifar",
-    "ram_budget": 737719.1111111111,
-    "runtime_budget": 1.5,
-    "time_limit_s": 400,
-    "solver": "gurobi",
-    "solve_threads": 16,
-})
+solve(
+    model="resnet18_cifar",
+    platform="m4",
+    ram_budget=737719,
+    runtime_budget=1.5,
+    time_limit_s=400,
+    solve_threads=16,
+)
 ```
 
 
