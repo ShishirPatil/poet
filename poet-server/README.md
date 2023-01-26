@@ -1,6 +1,6 @@
 # POET Server Setup
 
-In this guide, we will show you how to set up the POET ILP server for use locally or as a hosted service. We use this to host our POET server that powers requests from the [POET Demo Colab](https://colab.research.google.com/drive/1iup_edJd9zB1tfVBHXLmkWOT5yoSmXzz?usp=sharing) notebook. You do not need to set-up a POET-server to use POET, but feel free to use it to set-up your hosted service. 
+In this guide, we will show you how to set up the POET ILP server for use locally or as a hosted service. We use this to host our POET server that powers requests from the [POET Demo Colab](https://colab.research.google.com/drive/1iup_edJd9zB1tfVBHXLmkWOT5yoSmXzz?usp=sharing) notebook. You do not need to set-up a POET-server to use POET, but feel free to use it to set-up your hosted service.
 
 POET's Integer Linear Program (ILP) formulation is compatible with a variety of solvers, including Gurobi and COIN-OR CBC. In this guide, we will demonstrate how to set it up using both of these solvers.
 
@@ -28,7 +28,7 @@ The ILP solver defaults to using the COIN-OR CBC solver when Gurobi isn't availa
 
 ## Option 2: Running the Server Locally within a Docker Container
 
-We include a Docker image that can be used to run the server. 
+We include a Docker image that can be used to run the server.
 
 Prebuilt Docker images are available at `public.ecr.aws/shishirpatil/poet-server`
 
@@ -39,7 +39,7 @@ docker pull public.ecr.aws/shishirpatil/poet-server:latest
 docker run -p 80:80 -v ~/gurobi.lic:/opt/gurobi/gurobi.lic public.ecr.aws/shishirpatil/poet-server
 ```
 
-Or, you can build the docker container yourself following the steps below. 
+Or, you can build the docker container yourself following the steps below.
 
 
 1. Ensure you have [Docker Compose](https://docs.docker.com/compose/install/) installed.
@@ -51,10 +51,10 @@ Or, you can build the docker container yourself following the steps below.
 
 ## Option 3: Hosting POET server on an AWS EC2 Instance
 
-Ensure that you have moved the `gurobi.lic` file (if you want to use the Gurobi optimizer) you downloaded earlier to the EC2 instance. Ensure that Port 80 is open for ingress traffic. 
- 
+Ensure that you have moved the `gurobi.lic` file (if you want to use the Gurobi optimizer) you downloaded earlier to the EC2 instance. Ensure that Port 80 is open for ingress traffic.
 
-## Making Requests 
+
+## Making Requests
 
 To issue requests to the POET server, you can use the following Python code. Here, we use the demo POET-server hosted at IP `35.184.186.64`:
 
@@ -66,7 +66,6 @@ response = requests.get("http://35.184.186.64/solve", {
     "platform": "m0",
     "ram_budget": 90000000,
     "runtime_budget": 1.253,
-    "solver": "gurobi",
 })
 
 print(response.json())

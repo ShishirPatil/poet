@@ -19,9 +19,9 @@ class POETSolverGurobi:
         self,
         g: DFGraph,
         # cost weighting
-        cpu_power_cost_vec_joule,
-        pagein_power_cost_vec_joule,
-        pageout_power_cost_vec_joule,
+        cpu_power_cost_vec_joule: np.ndarray,
+        pagein_power_cost_vec_joule: np.ndarray,
+        pageout_power_cost_vec_joule: np.ndarray,
         # constraints
         ram_budget_bytes: Optional[float] = None,
         runtime_budget_ms: Optional[float] = None,
