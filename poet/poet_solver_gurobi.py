@@ -43,11 +43,10 @@ class POETSolverGurobi:
 
         self.timer = Timer
 
-        with redirect_stdout(open(os.devnull, "w")):
-            self.m = Model(self.model_name)
-            self.m.Params.TimeLimit = time_limit_s
-            if solve_threads:
-                self.m.Params.Threads = solve_threads
+        self.m = Model(self.model_name)
+        self.m.Params.TimeLimit = time_limit_s
+        if solve_threads:
+            self.m.Params.Threads = solve_threads
 
         grb_ram_ub = ram_budget_bytes if ram_budget_bytes is not None else GRB.INFINITY
 
