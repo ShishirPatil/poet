@@ -1,5 +1,5 @@
 import os
-from typing import Literal, Optional
+from typing import Literal
 
 import uvicorn
 from fastapi import FastAPI, HTTPException
@@ -8,6 +8,10 @@ from loguru import logger
 from poet import solve
 
 SOLVE_THREADS = min(4, os.cpu_count())
+NUM_WORKERS = 2 * os.cpu_count() + 1
+
+# makes ANSI color codes work on Windows
+os.system("")
 
 app = FastAPI()
 
@@ -57,4 +61,10 @@ def solve_handler(
 
 if __name__ == "__main__":
     logger.info("Initializing an instance of the POET server.")
-    uvicorn.run("server:app", host="0.0.0.0", port=80, reload=os.environ.get("DEV"))
+    uvicorn.run(
+        "server:app",
+        host="0.0.0.0",
+        port=80,
+        reload=os.environ.get("DEV"),
+        workers=NUM_WORKERS,
+    )
