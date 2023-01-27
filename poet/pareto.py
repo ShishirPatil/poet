@@ -6,12 +6,9 @@ import os
 from concurrent.futures import ProcessPoolExecutor
 import matplotlib.pyplot as plt
 
-def simple_solve(
-    params
-):
-    return solve(
-        **params
-    )
+
+def simple_solve(params):
+    return solve(**params)
 
 
 def pareto(
@@ -63,22 +60,28 @@ def pareto(
         for result in executor.map(
             simple_solve,
             [
-                dict(model=model,
-        platform=platform,
-        ram_budget=ram_budget,
-        runtime_budget=runtime_budget,
-        mem_power_scale=mem_power_scale,
-        batch_size=batch_size,
-        use_actual_gurobi=use_actual_gurobi,
-        solver=solver,
-        time_limit_s=time_limit_s,
-        solve_threads=solve_threads)
+                dict(
+                    model=model,
+                    platform=platform,
+                    ram_budget=ram_budget,
+                    runtime_budget=runtime_budget,
+                    mem_power_scale=mem_power_scale,
+                    batch_size=batch_size,
+                    use_actual_gurobi=use_actual_gurobi,
+                    solver=solver,
+                    time_limit_s=time_limit_s,
+                    solve_threads=solve_threads,
+                )
                 for ram_budget in ram_budget_range
             ],
         ):
             print_result(result)
             print(result.total_power_cost_cpu, result.total_power_cost_page, result.ram_budget)
-            plt.plot(result.ram_budget, -1 if result.total_power_cost_cpu is None else result.total_power_cost_cpu + result.total_power_cost_page, "r.")
+            plt.plot(
+                result.ram_budget,
+                -1 if result.total_power_cost_cpu is None else result.total_power_cost_cpu + result.total_power_cost_page,
+                "r.",
+            )
             plt.draw()
             plt.pause(0.1)
 

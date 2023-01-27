@@ -1,5 +1,5 @@
-from dataclasses import dataclass
 import pickle
+from dataclasses import dataclass
 from pathlib import Path
 from typing import List
 
@@ -52,7 +52,12 @@ def make_dfgraph_costs(net, device):
     for idx, (layer, specs) in enumerate(zip(net, per_layer_specs)):
         layer_name = "layer{}_{}".format(idx, layer.__class__.__name__)
         layer_names[layer] = layer_name
-        gb.add_node(layer_name, cpu_cost=specs["runtime_ms"], ram_cost=specs["memory_bytes"], backward=isinstance(layer, GradientLayer))
+        gb.add_node(
+            layer_name,
+            cpu_cost=specs["runtime_ms"],
+            ram_cost=specs["memory_bytes"],
+            backward=isinstance(layer, GradientLayer),
+        )
         gb.set_parameter_cost(gb.parameter_cost + specs["param_memory_bytes"])
         page_in_cost_dict[layer_name] = specs["pagein_cost_joules"]
         page_out_cost_dict[layer_name] = specs["pageout_cost_joules"]
@@ -127,7 +132,7 @@ def get_chipset_and_net(platform: str, model: str, batch_size: int, mem_power_sc
         ram_budget_end = 1e9
     elif model == "transformer":
         net = BERTBase(SEQ_LEN=512, HIDDEN_DIM=768, I=64, HEADS=12, NUM_TRANSFORMER_BLOCKS=1)
-        ram_budget_start = 3e7 # TODO: this was changed
+        ram_budget_start = 3e7  # TODO: this was changed
         ram_budget_end = 4e7
     else:
         raise NotImplementedError(f"Model {model} not implemented.")
@@ -136,7 +141,14 @@ def get_chipset_and_net(platform: str, model: str, batch_size: int, mem_power_sc
 
 
 def plot_network(
-    platform: str, model: str, directory: str, batch_size: int = 1, mem_power_scale: float = 1.0, format="pdf", quiet=True, name=""
+    platform: str,
+    model: str,
+    directory: str,
+    batch_size: int = 1,
+    mem_power_scale: float = 1.0,
+    format="pdf",
+    quiet=True,
+    name="",
 ):
     chipset, net, *_ = get_chipset_and_net(platform, model, batch_size, mem_power_scale)
     g, *_ = make_dfgraph_costs(net, chipset)
@@ -164,7 +176,11 @@ def print_result(result: POETResult):
         plt.matshow(solution.SSd)
         plt.title("SSd")
         plt.show()
+    elif solution.finished:
+        print(
+            "The problem is infeasible since the provided memory budget and/or runtime budget are too small to run the network on the given platform."
+        )
     else:
         print(
-            "POET failed to find a feasible solution within the provided time limit. \n Either a) increase the memory and training time budgets, and/or b) increase the solve time [total_power_cost_page]"
+            "POET failed to find a feasible solution within the provided time limit. \n Either a) increase the memory and training time budgets, and/or b) increase the solve time (time_limit_s)"
         )
