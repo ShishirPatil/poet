@@ -132,8 +132,8 @@ def get_chipset_and_net(platform: str, model: str, batch_size: int, mem_power_sc
         ram_budget_end = 1e9
     elif model == "transformer":
         net = BERTBase(SEQ_LEN=512, HIDDEN_DIM=768, I=64, HEADS=12, NUM_TRANSFORMER_BLOCKS=1)
-        ram_budget_start = 3e7  # TODO: this was changed
-        ram_budget_end = 4e7
+        ram_budget_start = 1e5
+        ram_budget_end = 7e7
     else:
         raise NotImplementedError(f"Model {model} not implemented.")
 
