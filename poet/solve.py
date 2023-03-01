@@ -2,12 +2,18 @@ from argparse import ArgumentParser
 from typing import Literal, Optional
 
 import numpy as np
+from gurobipy import GRB, GurobiError
 
 from poet import solve
 from poet.poet_solver import POETSolver
 from poet.poet_solver_gurobi import POETSolverGurobi
-from poet.util import get_chipset_and_net, make_dfgraph_costs, plot_dfgraph, print_result, POETResult
-from gurobipy import GRB, GurobiError
+from poet.util import (
+    POETResult,
+    get_chipset_and_net,
+    make_dfgraph_costs,
+    plot_dfgraph,
+    print_result,
+)
 
 
 def solve(
@@ -48,7 +54,7 @@ def solve(
     :param time_limit_s: The time limit for solving in seconds.
     :param solve_threads: The number of threads to use for solving.
     """
-    chipset, net = get_chipset_and_net(
+    chipset, net, *_ = get_chipset_and_net(
         platform=platform,
         model=model,
         batch_size=batch_size,
@@ -142,9 +148,23 @@ if __name__ == "__main__":
         "--model",
         type=str,
         required=True,
-        choices=["vgg16", "vgg16_cifar", "resnet18", "resnet50", "resnet18_cifar", "bert", "transformer", "linear"],
+        choices=[
+            "vgg16",
+            "vgg16_cifar",
+            "resnet18",
+            "resnet50",
+            "resnet18_cifar",
+            "bert",
+            "transformer",
+            "linear",
+        ],
     )
-    parser.add_argument("--platform", type=str, required=True, choices=["m0", "a72", "a72nocache", "m4", "jetsontx2"])
+    parser.add_argument(
+        "--platform",
+        type=str,
+        required=True,
+        choices=["m0", "a72", "a72nocache", "m4", "jetsontx2"],
+    )
     parser.add_argument("--ram-budget", type=int, required=True)
     parser.add_argument("--runtime-budget", type=float, required=True)
     parser.add_argument("--batch-size", type=int, default=1)
@@ -153,7 +173,12 @@ if __name__ == "__main__":
     parser.add_argument("--remat", action="store_true", default=True)
     parser.add_argument("--time-limit-s", type=int, default=1e100)
     parser.add_argument("--solve-threads", type=int, default=4)
-    parser.add_argument("--solver", type=str, default="gurobipy", choices=["gurobipy", "pulp-gurobi", "pulp-cbc"])
+    parser.add_argument(
+        "--solver",
+        type=str,
+        default="gurobipy",
+        choices=["gurobipy", "pulp-gurobi", "pulp-cbc"],
+    )
     parser.add_argument("--use-actual-gurobi", action="store_true", default=False)
     parser.add_argument("--print-power-costs", action="store_true", default=False)
     parser.add_argument("--print-graph-info", action="store_true", default=True)

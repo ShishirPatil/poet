@@ -41,7 +41,6 @@ docker run -p 80:80 -v ~/gurobi.lic:/opt/gurobi/gurobi.lic public.ecr.aws/shishi
 
 Or, you can build the docker container yourself following the steps below.
 
-
 1. Ensure you have [Docker Compose](https://docs.docker.com/compose/install/) installed.
 2. Clone this repository by running `git clone https://github.com/ShishirPatil/poet`.
 3. If using Gurobi, move the `gurobi.lic` file you downloaded in the previous step to the `poet-server` directory of this repository (i.e. to `poet-server/gurobi.lic`).
@@ -52,7 +51,6 @@ Or, you can build the docker container yourself following the steps below.
 ## Option 3: Hosting POET server on an AWS EC2 Instance
 
 Ensure that you have moved the `gurobi.lic` file (if you want to use the Gurobi optimizer) you downloaded earlier to the EC2 instance. Ensure that Port 80 is open for ingress traffic.
-
 
 ## Making Requests
 
@@ -70,6 +68,3 @@ response = requests.get("http://35.184.186.64/solve", {
 
 print(response.json())
 ```
-
-
-
