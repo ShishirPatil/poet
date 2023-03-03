@@ -1,3 +1,4 @@
+import torch
 from poet.power_computation import (
     LinearLayer,
     ReLULayer,
@@ -21,9 +22,11 @@ from poet.power_computation import (
 
 
 # transforms input model's graph to output graph with POET layer nodes
-def graph_transform(traced):
+def graph_transform(traced: torch.fx.graph_module.GraphModule) -> torch.fx.graph_module.GraphModule: 
     for n in traced.graph.nodes:
-        if "<built-in function" in str(n.target):
+        #ignores built-in functions and input x which are not layer nodes in the model graph
+        #ignores poet layer nodes which are added to the model graph from this function
+        if "<built-in function" in str(n.target) or "poet" in str(n.target) or "x" == str(n.target):
             continue
         elif "fc" in str(n.target):
             with traced.graph.inserting_after(n):
@@ -55,5 +58,11 @@ def graph_transform(traced):
                 new_node = traced.graph.call_function(MaxPool2d, n.args, n.kwargs)
                 n.replace_all_uses_with(new_node)
             traced.graph.erase_node(n)
+        else:
+            user_input = input(str(n.target) + ' is not supported by POET layers. Would you like to proceed? (y/n)')
+            if user_input.lower() == 'y':
+                continue
+            else:
+                exit(0)
     traced.recompile()
     return traced

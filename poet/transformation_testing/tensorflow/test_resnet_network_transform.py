@@ -2,7 +2,7 @@ from poet.architectures.network_transform_tensorflow import network_transform
 from poet.power_computation import InputLayer
 import tensorflow as tf
 
-# transforms VGG Model network layers into POET computation layers
+# transforms ResNet Model network layers into POET computation layers
 
 
 # defining ResNet model in TensorFlow
