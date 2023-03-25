@@ -240,6 +240,13 @@ class GradientLayer(DNNLayer):
             assert inputs[_index].out_shape == inputs[_index - 1].out_shape
         return inputs[0].out_shape
 
+class CropConcatLayer(DNNLayer):
+    def __init__(self, copycrop, input):
+        super().__init__(out_shape=self.find_outshape(input), depends_on=[input, copycrop])
+
+    def find_outshape(self, input):
+        B, C, H, W = input.out_shape
+        return (B, 2*C, H, W)
 
 def get_net_costs(net, device):
     compute_energy_list, compute_runtime_list, ram_list, param_ram_list, pagein_cost, pageout_cost = [[] for _ in range(6)]
