@@ -38,7 +38,7 @@ def network_transform(net, layers, batch_size, num_classes, input_shape):
             layers.extend(input[1:])
         if isinstance(module, BasicBlock) or isinstance(module, Bottleneck):
             input = network_transform(nn.Sequential(*list(module.children())), [layers[-1]], batch_size, num_classes, input_shape)
-            layers.extend(input[1:])        
+            layers.extend(input[1:])
         if isinstance(module, nn.Linear):
             lin_layer = LinearLayer(module.in_features, module.out_features, layers[-1])
             act_layer = ReLULayer(lin_layer)
