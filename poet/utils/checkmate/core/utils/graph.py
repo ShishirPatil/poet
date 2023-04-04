@@ -10,7 +10,7 @@ import numpy as np
 def edge_to_adj_list(E: EdgeList, convert_undirected=False):
     """Returns an (undirected / bidirectional) adjacency list"""
     adj_list = defaultdict(set)
-    for (i, j) in E:
+    for i, j in E:
         adj_list[i].add(j)
         if convert_undirected:
             adj_list[j].add(i)

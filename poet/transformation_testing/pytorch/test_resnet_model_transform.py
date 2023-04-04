@@ -68,11 +68,7 @@ for epoch in range(num_epochs):
             if n.target in remat_layers:
                 model_indexer = remat_and_paging.get_all_parent_layers(model, n.target)[0]
                 layer = getattr(model_indexer[0], model_indexer[1])
-                layer.register_forward_hook(remat_and_paging.memory_saving(model_indexer, n, True, False, remat_list))
-            # if n.target in paging_layers:
-            #     model_indexer = remat_and_paging.get_all_parent_layers(model, n.target)[0]
-            #     layer = getattr(model_indexer[0], model_indexer[1])
-            #     layer.register_forward_hook(remat_and_paging.memory_saving(model_indexer, n, False, True, remat_list))
+                layer.register_forward_hook(remat_and_paging.memory_saving(model_indexer, n, remat_list))
         outputs = model(images)
         loss = criterion(outputs, labels)
 
@@ -81,11 +77,7 @@ for epoch in range(num_epochs):
             if n.target in remat_layers:
                 model_indexer = remat_and_paging.get_all_parent_layers(model, n.target)[0]
                 layer = getattr(model_indexer[0], model_indexer[1])
-                layer.register_backward_hook(remat_and_paging.reuse_layer(model_indexer, n, True, False, remat_list))
-            # if n.target in paging_layers:
-            #     model_indexer = remat_and_paging.get_all_parent_layers(model, n.target)[0]
-            #     layer = getattr(model_indexer[0], model_indexer[1])
-            #     layer.register_backward_hook(remat_and_paging.reuse_layer(model_indexer, n, layer, False, True, remat_list))
+                layer.register_backward_hook(remat_and_paging.reuse_layer(model_indexer, n, remat_list))
         optimizer.zero_grad()
         loss.backward()
         optimizer.step()
@@ -114,10 +106,6 @@ with torch.no_grad():
                 model_indexer = remat_and_paging.get_all_parent_layers(model, n.target)[0]
                 layer = getattr(model_indexer[0], model_indexer[1])
                 layer.register_forward_hook(remat_and_paging.memory_saving(model_indexer, n, remat_list))
-            # if n.target in paging_layers:
-            #     model_indexer = remat_and_paging.get_all_parent_layers(model, n.target)[0]
-            #     layer = getattr(model_indexer[0], model_indexer[1])
-            #     layer.register_forward_hook(remat_and_paging.memory_saving(model_indexer, n, False, True, remat_list))
         outputs = model(images)
         _, predicted = torch.max(outputs.data, 1)
         total += labels.size(0)
