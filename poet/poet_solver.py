@@ -107,7 +107,7 @@ class POETSolver:
 
     def _create_correctness_constraints(self):
         # ensure all computations are possible
-        for (u, v) in self.g.edge_list:
+        for u, v in self.g.edge_list:
             for t in range(self.T):
                 self.m += self.R[t][v] <= self.R[t][u] + self.SRam[t][u]
         # ensure all checkpoints are in memory
