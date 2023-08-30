@@ -21,6 +21,16 @@ from poet.power_computation_transformer import (
 
 # Look-up ignored for now
 def make_transformer(SEQ_LEN, HIDDEN_DIM, I, HEADS, layers):
+    """
+    Appends a transformer block to the list of layers.
+
+    Parameters:
+        SEQ_LEN (int): Length of the sequence.
+        HIDDEN_DIM (int): Dimension of the hidden layers.
+        I (int): Intermediate dimension used in calculations.
+        HEADS (int): Number of attention heads.
+        layers (list): List of layers to which the transformer block will be appended.
+    """
     input_layer = layers[-1]
     layers.append(QueryKeyValueMatrix(SEQ_LEN, HIDDEN_DIM, I, HEADS, layers[-1]))  # Calculate Query
     layers.append(QKTMatrix(SEQ_LEN=SEQ_LEN, HIDDEN_DIM=I, I=SEQ_LEN, ATTN_HEADS=HEADS, input=layers[-1]))  # QK^T
@@ -36,6 +46,19 @@ def make_transformer(SEQ_LEN, HIDDEN_DIM, I, HEADS, layers):
 
 
 def BERTBase(SEQ_LEN=512, HIDDEN_DIM=768, I=64, HEADS=12, NUM_TRANSFORMER_BLOCKS=12):
+    """
+    Constructs a BERT model with specified parameters.
+
+    Parameters:
+        SEQ_LEN (int, optional): Length of the input sequence. Default is 512.
+        HIDDEN_DIM (int, optional): Dimension of the hidden layers. Default is 768.
+        I (int, optional): Intermediate dimension used in calculations. Default is 64.
+        HEADS (int, optional): Number of attention heads. Default is 12.
+        NUM_TRANSFORMER_BLOCKS (int, optional): Number of transformer blocks. Default is 12.
+
+    Returns:
+        list: List of model layers.
+    """
     layers = [InputLayer((SEQ_LEN, HIDDEN_DIM))]
     for _transformer in range(0, NUM_TRANSFORMER_BLOCKS):
         make_transformer(SEQ_LEN, HIDDEN_DIM, I, HEADS, layers)

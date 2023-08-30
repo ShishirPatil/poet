@@ -2,6 +2,12 @@ from poet.power_computation import LinearLayer, ReLULayer, CrossEntropyLoss, Gra
 
 
 def make_linear_network(batch_size=1, input_shape=[784]):
+    """
+    Constructs a linear network model with specified input shape and batch size.
+
+    Returns:
+        list: List of model layers.
+    """
     layers = [InputLayer((batch_size, *input_shape))]
 
     linear_layers = [[784, 10], [10, 120], [120, 100], [100, 200], [200, 10], [10, 10]]
@@ -18,6 +24,12 @@ def make_linear_network(batch_size=1, input_shape=[784]):
 
 
 def make_unit_linear_network(nfwd=12):
+    """
+    Constructs a unit linear network model with a specified number of forward layers.
+
+    Returns:
+        list: List of model layers.
+    """
     layers = [InputLayer((1,))]
     for i in range(nfwd):
         layers.append(ReLULayer(layers[-1]))

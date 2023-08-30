@@ -13,7 +13,30 @@ from poet.power_computation import (
 
 
 def vgg16(batch_size, num_classes=1000, input_shape=(3, 224, 224)):
+    """
+    Constructs a VGG-16 model.
+
+    Parameters:
+        batch_size (int): Size of the input batch.
+        num_classes (int, optional): Number of output classes. Default is 1000.
+        input_shape (tuple, optional): Shape of the input data. Default is (3, 224, 224).
+
+    Returns:
+        list: List of model layers.
+    """
     def make_conv_stack(in_channels, out_filters, kernel_size, x):
+        """
+        Constructs a convolutional stack for the VGG-16 model.
+
+        Parameters:
+            in_channels (int): Number of input channels.
+            out_filters (int): Number of output filters.
+            kernel_size (tuple): Size of the convolutional kernel.
+            x (Tensor): Input tensor.
+
+        Returns:
+            list: List of convolutional stack layers.
+        """
         # Stride=1, padding=(1,1)
         conv = Conv2dLayer(in_channels, out_filters, kernel_size, 1, (1, 1), x)
         relu = ReLULayer(conv)
