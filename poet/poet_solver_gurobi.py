@@ -13,6 +13,7 @@ from poet.utils.checkmate.core.utils.timer import Timer
 
 # noinspection PyPackageRequirements
 
+
 # POET ILP defined using Gurobi
 class POETSolverGurobi:
     def __init__(
@@ -124,7 +125,7 @@ class POETSolverGurobi:
 
     def _create_correctness_constraints(self):
         # ensure all computations are possible
-        for (u, v) in self.g.edge_list:
+        for u, v in self.g.edge_list:
             for t in range(self.T):
                 self.m.addLConstr(self.R[t, v], GRB.LESS_EQUAL, self.R[t, u] + self.SRam[t, u])
         # ensure all checkpoints are in memory

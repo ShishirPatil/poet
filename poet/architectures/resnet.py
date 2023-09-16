@@ -17,7 +17,32 @@ from poet.power_computation import (
 
 
 def resnet18(batch_size, num_classes=1000, input_shape=(3, 224, 224)):  # Imagenet
+    """
+    Constructs a ResNet-18 model.
+
+    Parameters:
+        batch_size (int): Size of the input batch.
+        num_classes (int, optional): Number of output classes. Default is 1000.
+        input_shape (tuple, optional): Shape of the input data. Default is (3, 224, 224).
+
+    Returns:
+        list: List of model layers.
+    """
+
     def make_basic_block(in_planes, planes, stride, padding, x):
+        """
+        Constructs a basic block for the ResNet-18 model.
+
+        Parameters:
+            in_planes (int): Number of input channels.
+            planes (int): Number of output channels.
+            stride (int): Stride of the convolutional layer.
+            padding (tuple): Padding for the convolutional layer.
+            x (Tensor): Input tensor.
+
+        Returns:
+            list: List of basic block layers.
+        """
         kernel_size = (3, 3)
         conv1 = Conv2dLayer(in_planes, planes, kernel_size, stride, padding, x)
         bn1 = BatchNorm2d(conv1)
